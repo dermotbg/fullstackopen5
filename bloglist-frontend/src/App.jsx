@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,8 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [isError, setIsError] = useState(false)
 
 
   useEffect(() => {
@@ -43,6 +46,11 @@ const App = () => {
     }
     catch (exception) {
       console.log(exception)
+      setIsError(true)
+      setErrorMessage('Wrong Credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
@@ -52,15 +60,10 @@ const App = () => {
     setUser(null)
   }
 
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
-  }
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value)
-  }
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value)
-  }
+  const handleTitleChange = (event) => setNewTitle(event.target.value)
+  const handleAuthorChange = (event) => setNewAuthor(event.target.value)
+  const handleUrlChange = (event) => setNewUrl(event.target.value)
+
 
   const addBlog = async (event) => {
     event.preventDefault()
@@ -76,9 +79,14 @@ const App = () => {
       setNewTitle('')
       setNewAuthor('')
       setNewUrl('')
+      setErrorMessage(`A New Blog: ${response.title} by ${response.author} added`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
     catch (exception){
       console.log(exception)
+      
     }
   }
 
@@ -86,6 +94,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={errorMessage} error={isError} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -108,6 +117,7 @@ const App = () => {
   return (
     <div>
         <h2>blogs</h2>
+        <Notification message={errorMessage} error={isError} />
         <p>{user.name} logged in 
           <button onClick={handleLogout}>logout</button>
         </p>
