@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(false)
 
@@ -86,7 +90,6 @@ const App = () => {
     }
     catch (exception){
       console.log(exception)
-      
     }
   }
 
@@ -121,13 +124,15 @@ const App = () => {
         <p>{user.name} logged in 
           <button onClick={handleLogout}>logout</button>
         </p>
-        <h2>create new</h2>
-        <form onSubmit={addBlog}>
-          <div>title:<input value={newTitle} onChange={handleTitleChange} /></div>
-          <div>author:<input value={newAuthor} onChange={handleAuthorChange} /></div>
-          <div>url:<input value={newUrl} onChange={handleUrlChange} /></div>
-          <button type="submit" >create</button>
-        </form> 
+        <Togglable buttonLabel='create note'>
+          <h2>create new</h2>
+            <form onSubmit={addBlog}>
+              <div>title:<input value={newTitle} onChange={handleTitleChange} /></div>
+              <div>author:<input value={newAuthor} onChange={handleAuthorChange} /></div>
+              <div>url:<input value={newUrl} onChange={handleUrlChange} /></div>
+              <button type="submit" >create</button>
+            </form> 
+        </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
           )}
