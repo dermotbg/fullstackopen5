@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
@@ -18,6 +18,8 @@ const App = () => {
 
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(false)
+
+  const blogFormRef = useRef()
 
 
   useEffect(() => {
@@ -71,6 +73,7 @@ const App = () => {
 
   const addBlog = async (event) => {
     event.preventDefault()
+    blogFormRef.current.toggleVisible()
     const blogObj = {
       title: newTitle,
       author: newAuthor,
@@ -124,7 +127,7 @@ const App = () => {
         <p>{user.name} logged in 
           <button onClick={handleLogout}>logout</button>
         </p>
-        <Togglable buttonLabel='create note'>
+        <Togglable buttonLabel='create note' ref={blogFormRef}>
           <h2>create new</h2>
             <form onSubmit={addBlog}>
               <div>title:<input value={newTitle} onChange={handleTitleChange} /></div>
