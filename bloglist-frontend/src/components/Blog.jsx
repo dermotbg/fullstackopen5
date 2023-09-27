@@ -3,6 +3,7 @@ import likeService from '../services/like'
 
 const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false)
+  // add likes state to add/subtract per load, can be added twice on page reload but not writing liked user data to db
   const [likes, setLikes] = useState(blog.likes)
     
   const showWhenVisible = { display: visible ? '' : 'none' }
