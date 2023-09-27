@@ -3,6 +3,7 @@ const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false)
     
   const showWhenVisible = { display: visible ? '' : 'none' }
+  const user = JSON.parse(window.localStorage.getItem('loggedInAppUser'))
 
   const toggleVisible = () => {
     setVisible(!visible)
@@ -22,7 +23,7 @@ const Blog = ({ blog }) => {
           likes:  {blog.likes} <button>like</button>
         </div>
         <div>
-          {blog.user.name}
+          {blog.user.name ? blog.user.name : user.name}
         </div>
       </div>
     </div>
