@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
@@ -11,10 +12,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
 
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(false)
@@ -66,26 +63,14 @@ const App = () => {
     setUser(null)
   }
 
-  const handleTitleChange = (event) => setNewTitle(event.target.value)
-  const handleAuthorChange = (event) => setNewAuthor(event.target.value)
-  const handleUrlChange = (event) => setNewUrl(event.target.value)
 
-
-  const addBlog = async (event) => {
-    event.preventDefault()
+  const addBlog = async (blogObj) => {
     blogFormRef.current.toggleVisible()
-    const blogObj = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
     try {
       const response = await blogService.create(blogObj)
       console.log(response)
       setBlogs(blogs.concat(response))
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
+      
       setErrorMessage(`A New Blog: ${response.title} by ${response.author} added`)
       setTimeout(() => {
         setErrorMessage(null)
@@ -128,13 +113,7 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
         </p>
         <Togglable buttonLabel='create note' ref={blogFormRef}>
-          <h2>create new</h2>
-            <form onSubmit={addBlog}>
-              <div>title:<input value={newTitle} onChange={handleTitleChange} /></div>
-              <div>author:<input value={newAuthor} onChange={handleAuthorChange} /></div>
-              <div>url:<input value={newUrl} onChange={handleUrlChange} /></div>
-              <button type="submit" >create</button>
-            </form> 
+          <BlogForm createBlog={addBlog}/>
         </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
