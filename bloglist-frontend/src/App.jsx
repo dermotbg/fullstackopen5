@@ -81,6 +81,11 @@ const App = () => {
     }
   }
 
+  const updateBlogs = async () => {
+    const blogs = await blogService.getAll()
+    setBlogs(blogs)
+  }
+
   if (user === null) {
     return (
       <div>
@@ -112,11 +117,11 @@ const App = () => {
         <p>{user.name} logged in 
           <button onClick={handleLogout}>logout</button>
         </p>
-        <Togglable buttonLabel='create note' ref={blogFormRef}>
+        <Togglable buttonLabel='create blog' ref={blogFormRef}>
           <BlogForm createBlog={addBlog}/>
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateBlogs={updateBlogs} />
           )}
     </div>
   )

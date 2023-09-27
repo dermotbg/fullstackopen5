@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlogs }) => {
   const [visible, setVisible] = useState(false)
   // add likes state to add/subtract per load, can be added twice on page reload but not writing liked user data to db
   const [likes, setLikes] = useState(blog.likes)
@@ -41,7 +41,8 @@ const deleteHandler = async (event) => {
   if(window.confirm(`Remove blog ${blog.title} by ${blog.author}?`) && blog.user.username === user.username){
     blog.token = user.token
     try {
-      blogService.deleteBlog(blog)
+      await blogService.deleteBlog(blog)
+      updateBlogs()
       alert('Blog deleted')
     }
     catch(exception){
