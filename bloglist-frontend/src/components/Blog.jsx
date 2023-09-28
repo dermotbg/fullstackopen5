@@ -1,12 +1,14 @@
-import { useState } from "react"
+import PropTypes from 'prop-types'
+import { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, updateBlogs }) => {
   const [visible, setVisible] = useState(false)
   // add likes state to add/subtract per load, can be added twice on page reload but not writing liked user data to db
   const [likes, setLikes] = useState(blog.likes)
-    
+
   const showWhenVisible = { display: visible ? '' : 'none' }
+
   const user = JSON.parse(window.localStorage.getItem('loggedInAppUser'))
 
   const toggleVisible = () => {
@@ -31,34 +33,37 @@ const Blog = ({ blog, updateBlogs }) => {
       console.log(exception)
     }
   }
-  
-const deleteHandler = async (event) => {
-  event.preventDefault()
 
-  console.log('blog user',blog.user.username)
-  console.log('user.id',user.username)
+  const deleteHandler = async (event) => {
+    event.preventDefault()
 
-  if(window.confirm(`Remove blog ${blog.title} by ${blog.author}?`) && blog.user.username === user.username){
-    blog.token = user.token
-    try {
-      await blogService.deleteBlog(blog)
-      updateBlogs()
-      alert('Blog deleted')
+    if(window.confirm(`Remove blog ${blog.title} by ${blog.author}?`) && blog.user.username === user.username){
+      blog.token = user.token
+      try {
+        await blogService.deleteBlog(blog)
+        updateBlogs()
+        alert('Blog deleted')
+      }
+      catch(exception){
+        console.log(exception)
+      }
     }
-    catch(exception){
-      console.log(exception);
+    else{
+      alert('blog not deleted, unauthorized user')
     }
   }
-  else{
-    alert('blog not deleted, unauthorized user')
+
+  Blog.propTypes = {
+    blog: PropTypes.object.isRequired,
+    updateBlogs: PropTypes.func.isRequired
   }
-}
+
   return (
     <div className="blogStyle">
-        <div>
-          {blog.title} by {blog.author} 
-          <button onClick={toggleVisible}>{visible ? 'hide' : 'view'}</button>
-        </div>
+      <div>
+        {blog.title} by {blog.author}
+        <button onClick={toggleVisible}>{visible ? 'hide' : 'view'}</button>
+      </div>
       <div style={showWhenVisible}>
         <div>
           {blog.url}
@@ -72,7 +77,7 @@ const deleteHandler = async (event) => {
         {blog.user.username === user.username ? <button onClick={deleteHandler}>delete</button> : null}
       </div>
     </div>
-  ) 
+  )
 }
 
 export default Blog
