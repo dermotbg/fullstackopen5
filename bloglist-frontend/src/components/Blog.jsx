@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlogs }) => {
+const Blog = ({ blog, updateBlogs, testToggleVisible, testLikeHandler }) => {
   const [visible, setVisible] = useState(false)
   // add likes state to add/subtract per load, can be added twice on page reload but not writing liked user data to db
   const [likes, setLikes] = useState(blog.likes)
@@ -13,9 +13,16 @@ const Blog = ({ blog, updateBlogs }) => {
 
   const toggleVisible = () => {
     setVisible(!visible)
+    if(testToggleVisible){
+      testToggleVisible()
+    }
   }
 
   const likeHandler = async (event) => {
+    if(testLikeHandler){
+      testLikeHandler()
+      return
+    }
     event.preventDefault()
     const blogObj = {
       user: blog.user.id,
