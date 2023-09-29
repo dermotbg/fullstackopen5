@@ -60,11 +60,11 @@ const Blog = ({ blog, updateBlogs }) => {
 
   return (
     <div className="blogStyle">
-      <div>
+      <div className='title'>
         {blog.title} by {blog.author}
         <button onClick={toggleVisible}>{visible ? 'hide' : 'view'}</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='extraInfo'>
         <div>
           {blog.url}
         </div>
