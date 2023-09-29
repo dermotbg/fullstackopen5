@@ -55,7 +55,7 @@ test('URL & likes shown after view button clicked', async () => {
   expect(extraInfo).not.toHaveStyle('display: none')
 })
 
-test('Double click on like button returns to function calls', async () => {
+test('Double click on like button returns two function calls', async () => {
   const mockUpdate = jest.fn()
   const mockLike = jest.fn()
 
