@@ -51,19 +51,66 @@ describe('Blog app', function() {
       cy.get('.blogStyle')
         .should('contain', 'a new blog created by cypress by johnny cypress')
     })
-    it.only('a blog can be liked', function() {
+    it('a blog can be liked', function() {
       cy.createBlog({ title: 'the second blog in cypress', author: 'Jim Cypressing', url: 'cypress.com/jjpress' })
+      
       cy.contains('the second blog in cypress').parent()
-        .contains('view').click()
+      .contains('view').click()
       cy.contains('the second blog in cypress').parent()  
-        .contains('like').click()
+      .contains('like').click()
       cy.contains('the second blog in cypress').parent()
       
+      
+      cy.contains('the second blog in cypress').parent()
+      .find('button').should('contain', 'unlike')
+      cy.contains('the second blog in cypress').parent()
+      .find('.likeContainer').should('contain', 'likes: 1')
+    })
+    it('a blog can be deleted by its user', function() {
+      cy.createBlog({ title: 'the deleted blog in cypress', author: 'Jim Cypressing', url: 'cypress.com/jjpress' })
+      cy.contains('the deleted blog in cypress').parent()
+      .contains('view').click()
+      cy.contains('the deleted blog in cypress').parent()
+      .find('button').contains('delete').click()
+      
+      cy.contains('the deleted blog in cypress').should('not.exist')
+    })
+    it('a blog can only be deleted by its creator', function() {
+      const user = {
+        name: 'notDermot',
+        username: 'notDermot',
+        password: 'fullstack'
+      }
+      cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
 
-      cy.contains('the second blog in cypress').parent()
-        .find('button').should('contain', 'unlike')
-      cy.contains('the second blog in cypress').parent()
-        .find('.likeContainer').should('contain', 'likes: 1')
+      cy.createBlog({ title: 'the undeletable blog in cypress', author: 'Jim Cypressing', url: 'cypress.com/jjpress' })
+      cy.contains('logout').click()
+      cy.login({ username: 'notDermot', password: 'fullstack' })
+
+      cy.contains('the undeletable blog in cypress').parent()
+      .contains('view').click()
+
+      cy.contains('the undeletable blog in cypress').parent()
+        .should('not.contain', 'delete')
+      cy.contains('the undeletable blog in cypress').parent()
+        .find('button').contains('delete').should('not.exist')
+    })
+
+    it.only('blogs are ordered by likes high->low', function() {
+      cy.createBlog({ title: 'The lowest likes', author: 'Jim Cypressing', url: 'cypress.com/jjpress' })
+      cy.createBlog({ title: 'The highest likes', author: 'Jim Cypressing', url: 'cypress.com/jjpress' })
+
+      cy.get('.blogStyle').eq(0).should('contain', 'The lowest likes')
+      cy.get('.blogStyle').eq(1).should('contain', 'The highest likes')
+
+      cy.contains('The highest likes').parent()
+      .find('button').contains('view').click()
+      cy.contains('The highest likes').parent()
+        .find('button').contains('like').click()
+
+      cy.reload()
+      cy.get('.blogStyle').eq(1).should('contain', 'The lowest likes')
+      cy.get('.blogStyle').eq(0).should('contain', 'The highest likes')
     })
   })
 })
