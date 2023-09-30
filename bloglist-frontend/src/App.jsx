@@ -97,6 +97,7 @@ const App = () => {
             <input type="text"
               value={username}
               name='Username'
+              className='username'
               onChange={({ target }) => setUsername(target.value)} />
           </div>
           <div>
@@ -104,6 +105,7 @@ const App = () => {
             <input type="password"
               value={password}
               name='Password'
+              className='password'
               onChange={({ target }) => setPassword(target.value)} />
           </div>
           <button type='Submit'>Login</button>
