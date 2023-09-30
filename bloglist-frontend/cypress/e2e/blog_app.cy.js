@@ -51,6 +51,19 @@ describe('Blog app', function() {
       cy.get('.blogStyle')
         .should('contain', 'a new blog created by cypress by johnny cypress')
     })
-    
+    it.only('a blog can be liked', function() {
+      cy.createBlog({ title: 'the second blog in cypress', author: 'Jim Cypressing', url: 'cypress.com/jjpress' })
+      cy.contains('the second blog in cypress').parent()
+        .contains('view').click()
+      cy.contains('the second blog in cypress').parent()  
+        .contains('like').click()
+      cy.contains('the second blog in cypress').parent()
+      
+
+      cy.contains('the second blog in cypress').parent()
+        .find('button').should('contain', 'unlike')
+      cy.contains('the second blog in cypress').parent()
+        .find('.likeContainer').should('contain', 'likes: 1')
+    })
   })
 })

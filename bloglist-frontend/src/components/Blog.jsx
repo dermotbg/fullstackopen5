@@ -75,8 +75,8 @@ const Blog = ({ blog, updateBlogs, testToggleVisible, testLikeHandler }) => {
         <div>
           {blog.url}
         </div>
-        <div>
-          likes:  {likes} <button onClick={likeHandler}>{ likes === blog.likes ? 'like' : 'unlike' }</button>
+        <div className='likeContainer'>
+          likes: {likes} <button onClick={likeHandler} className='likeButton'>{ likes === blog.likes ? 'like' : 'unlike' }</button>
         </div>
         <div>
           {blog.user.name ? blog.user.name : user.name}
