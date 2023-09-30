@@ -1,7 +1,13 @@
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    cy.visit('http://localhost:5173')
+    const user = {
+      name: 'Dermot',
+      username: 'dermot',
+      password: 'fullstack'
+    }
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -10,15 +16,6 @@ describe('Blog app', function() {
     cy.get('.password')
   })
   describe('Login',function() {
-    beforeEach(function() {
-      const user = {
-        name: 'Dermot',
-        username: 'dermot',
-        password: 'fullstack'
-      }
-      cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
-
-    })
     it('succeeds with correct credentials', function() {
       cy.get('.username').type('dermot')
       cy.get('.password').type('fullstack')
@@ -36,5 +33,24 @@ describe('Blog app', function() {
         .should('contain', 'Wrong Credentials')
         .and('have.css', 'color', 'rgb(255, 0, 0)')
     })
+  })
+  describe('when logged in', function() {
+    beforeEach(function() {
+      cy.login({ username: 'dermot', password: 'fullstack' })
+    })
+    it('a blog can be created', function() {
+      cy.contains('create blog').click()
+      cy.get('#title').type('a new blog created by cypress')
+      cy.get('#author').type('johnny cypress')
+      cy.get('#url').type('cypress.com/blogs/aregreat')
+      cy.get('#submit').click()
+
+      cy.get('.message')
+        .should('contain', 'A New Blog: a new blog created by cypress by johnny cypress added')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+      cy.get('.blogStyle')
+        .should('contain', 'a new blog created by cypress by johnny cypress')
+    })
+    
   })
 })
