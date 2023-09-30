@@ -96,7 +96,7 @@ describe('Blog app', function() {
         .find('button').contains('delete').should('not.exist')
     })
 
-    it.only('blogs are ordered by likes high->low', function() {
+    it('blogs are ordered by likes high->low', function() {
       cy.createBlog({ title: 'The lowest likes', author: 'Jim Cypressing', url: 'cypress.com/jjpress' })
       cy.createBlog({ title: 'The highest likes', author: 'Jim Cypressing', url: 'cypress.com/jjpress' })
 
