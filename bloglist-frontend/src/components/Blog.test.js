@@ -44,7 +44,7 @@ test('URL & likes shown after view button clicked', async () => {
   const mockUpdate = jest.fn()
   const mockToggle = jest.fn()
 
-  const { container } = render(<Blog blog={blog} testToggleVisible={mockToggle} updateBlogs={mockUpdate} />)
+  const { container } = render(<Blog blog={blog} testToggleVisible={mockToggle} updateBlogs={mockUpdate} />) //mockUpdate needed for component requirement
   const button = screen.getByText('view')
 
   await userEvent.click(button)
